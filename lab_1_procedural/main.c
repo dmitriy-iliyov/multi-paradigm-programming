@@ -119,7 +119,6 @@ int main (){
                     result_matrix[i][j] = alphabet[i];
                 else{
                     result_matrix[i][j] = '0';
-
                 }
             }
         }
