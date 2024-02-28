@@ -10,15 +10,6 @@
 #define FLAG 0
 
 
-double laplace_cdf(double x, double mu, double b) {
-    if (x < mu) {
-        return 0.5 * exp((x - mu) / b);
-    } else {
-        return 1 - 0.5 * exp(-(x - mu) / b);
-    }
-}
-
-
 int main (){
     int size;
     int * array;
