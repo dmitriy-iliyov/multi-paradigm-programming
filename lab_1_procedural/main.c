@@ -89,21 +89,38 @@ void intArrayToCharArray(){
     }
 }
 
+int findIndex(char a, char * charArray){
+    int index = -1;
+    for(int i = 0; i < ALPHABET_POWER; i++){
+        if(a == charArray[i])
+            index = i;
+    }
+    return index;
+}
+
 void makeResultMatrix(){
     for (int i = -1; i < ALPHABET_POWER; i++) {
         for (int j = -1; j < ALPHABET_POWER; j++) {
             if (i == -1) {
                 if (j == -1)
                     result_matrix[i][j] = ' ';
-                else{
+                else
                     result_matrix[i][j] = alphabet[j];
-                }
             } else {
                 if (j == -1)
                     result_matrix[i][j] = alphabet[i];
                 else{
                     result_matrix[i][j] = '0';
                 }
+            }
+        }
+    }
+    for(int i = 0; i < size; i++){
+        if(i + 1 < size){
+            int current_index = findIndex(char_array[i], alphabet);
+            int next_index = findIndex(char_array[i + 1], alphabet);
+            if(current_index != -1 && next_index != -1){
+                result_matrix[current_index][next_index] = result_matrix[current_index][next_index] + 1;
             }
         }
     }
