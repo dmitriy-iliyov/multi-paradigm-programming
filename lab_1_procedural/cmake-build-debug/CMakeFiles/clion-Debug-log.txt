@@ -1,4 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/x64/ninja -DCMAKE_TOOLCHAIN_FILE=/Users/Sayner/.vcpkg-clion/vcpkg/scripts/buildsystems/vcpkg.cmake -G Ninja -S /Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural -B /Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural/cmake-build-debug
--- Configuring done (0.1s)
--- Generating done (0.0s)
--- Build files have been written to: /Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural/cmake-build-debug
