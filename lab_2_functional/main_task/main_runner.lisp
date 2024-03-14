@@ -1,3 +1,3 @@
 (handler-bind ((warning #'muffle-warning))
-  (load "test.lisp")
+  (load "main_task_code.lisp")
   (format t "~%"))
