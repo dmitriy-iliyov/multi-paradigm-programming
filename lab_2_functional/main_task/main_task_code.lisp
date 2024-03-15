@@ -20,6 +20,19 @@
              (new-interval (list a b)))
         (cut-to-intervals sorted-array alphabet-power (1+ i) (cons new-interval matrix-interval)))))
 
+(defun to-char-array (array matrix-interval alphabet)
+  (let ((char-array (make-array (length array))))
+    (dotimes (i (length array))
+      (dotimes (j (length alphabet))
+        (dotimes (k 2)
+          (when (and (>= (elt array i) (elt (elt matrix-interval j) (- k 1)))
+                     (<= (elt array i) (elt (elt matrix-interval j) k)))
+            (setf (elt char-array i) (elt alphabet j)))))))
+    char-array)
+
+(defun find-index (a char-array)
+  (cl-position a char-array :test #'char=))
+
 
 (defun main (size alphabet-power)
   (let ((start-list (values-by-random size))
