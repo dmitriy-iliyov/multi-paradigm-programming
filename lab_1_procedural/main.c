@@ -79,12 +79,9 @@ void cutToIntervals(){
 
 void toCharArray(){
     for(int i = 0; i < size; i++){
-        for (int j = 0; j < ALPHABET_POWER; j++) {
-            for (int k = 1; k < 2; k++) {
-                if(array[i] >= matrix_interval[j][k - 1] && array[i] <= matrix_interval[j][k]){
-                    char_array[i] = alphabet[j];
-                }
-            }
+        for(int j = 0; j < ALPHABET_POWER; j++){
+            if(array[i] >= matrix_interval[j][0] &&  array[i] <= matrix_interval[j][1])
+                char_array[i] = alphabet[j];
         }
     }
 }
