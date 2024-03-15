@@ -77,7 +77,7 @@ void cutToIntervals(){
     printf("\n");
 }
 
-void intArrayToCharArray(){
+void toCharArray(){
     for(int i = 0; i < size; i++){
         for (int j = 0; j < ALPHABET_POWER; j++) {
             for (int k = 1; k < 2; k++) {
@@ -175,7 +175,7 @@ int main (){
 
     cutToIntervals();
 
-    intArrayToCharArray();
+    toCharArray();
     printf("char array:\n");
     printCharArray(char_array, SIZE);
 
