@@ -179,8 +179,6 @@ int main (){
     printf("char array:\n");
     printCharArray(char_array, SIZE);
 
-    free(array);
-
     makeResultMatrix();
     printResultMatrix();
 
