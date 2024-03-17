@@ -20,14 +20,23 @@
              (new-interval (list a b)))
         (cut-to-intervals sorted-array alphabet-power (1+ i) (cons new-interval matrix-interval)))))
 
+(defun cut-to-intervals-v2 (sorted-array alphabet-power)
+  (let* ((n (length sorted-array))
+         (interval-width (/ n alphabet-power)))
+    (loop for i from 0 below alphabet-power
+          for a = (* i interval-width)
+          for b = (* (1+ i) interval-width)
+          collect (list (elt sorted-array (min (floor a) (1- n)))
+                        (elt sorted-array (min (floor b) (1- n)))))))
+
 (defun to-char-list (start-list intervals alphabet)
-  (let ((char-list (make-array (length start-list))))
+  (let ((char-list (make-list (length start-list))))
     (dotimes (i (length start-list))
       (dotimes (j (length alphabet))
-        (let ((a (elt (elt intervals j) 0))
-              (b (elt (elt intervals j) 1)))
-          (when (and (<= a (elt start-list i) b))
-            (setf (elt char-list i) (elt alphabet j))))))
+        (let ((a (nth 0 (nth j intervals)))
+              (b (nth 1 (nth j intervals))))
+          (when (and (<= a (nth i start-list) b))
+            (setf (nth i char-list) (nth j alphabet))))))
     char-list))
 
 (defun find-index (a char-list &optional (index 0))
@@ -37,30 +46,20 @@
           index
           (find-index a (cdr char-list) (1+ index)))))
 
-(defun make-result-matrix (char-array alphabet)
+(defun make-result-matrix (char-list alphabet)
   (let* ((alphabet-power (length alphabet))
-         (result-matrix (make-array (list alphabet-power alphabet-power)
-                                    :initial-element 0)))
-    (dotimes (i (length char-array))
-      (let* ((current-char (aref char-array i))
-             (current-index (if current-char
-                                (find-index current-char alphabet)
-                                nil)))
-        (when current-index
-          (let ((next-char (if (< (1+ i) (length char-array))
-                                (aref char-array (1+ i))
-                                nil))
-                (next-index (if next-char
-                                (find-index next-char alphabet)
-                                nil)))
-            (when next-index
-              (incf (aref result-matrix current-index next-index)))))))
+         (result-matrix (make-list alphabet-power :initial-element (make-list alphabet-power :initial-element 0))))
+    (dotimes (i (1- (length char-list)))
+      (let* ((current-index (find-index (nth i char-list) alphabet))
+             (next-index (find-index (nth (1+ i) char-list) alphabet)))
+        (when (and current-index next-index)
+          (incf (nth next-index (nth current-index result-matrix))))))
     result-matrix))
 
 (defun print-matrix (matrix)
-  (dotimes (i (array-dimension matrix 0))
-    (dotimes (j (array-dimension matrix 1))
-      (format t "~4d " (aref matrix i j)))
+  (dolist (row matrix)
+    (dolist (element row)
+      (format t "~a " element))
     (format t "~%")))
 
 (defun main (size alphabet-power)
