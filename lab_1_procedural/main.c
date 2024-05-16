@@ -5,8 +5,8 @@
 #include <math.h>
 
 
-#define ALPHABET_POWER 10
-#define SIZE 100
+#define ALPHABET_POWER 4
+#define SIZE 10
 #define FLAG 0
 
 int size;
