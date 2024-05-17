@@ -6,14 +6,13 @@
 
 
 #define ALPHABET_POWER 26
-#define SIZE 10z
-#define FLAG 0
+#define DATA_ENTERING_FLAG 1
+int size = 100;
 
-int size;
 int * array;
 int * sorted_array;
 char alphabet[ALPHABET_POWER];
-char char_array[SIZE];
+char * char_array;
 double matrix_interval[ALPHABET_POWER][2];
 char result_matrix [ALPHABET_POWER + 1][ALPHABET_POWER + 1];
 
@@ -28,7 +27,6 @@ void valuesByUser(){
 }
 
 void valuesByRandom(){
-    size = SIZE;
     array = (int*)malloc(size * sizeof(int));
     srand(time(NULL));
     for (int i = 0; i < size; i++) {
@@ -38,7 +36,7 @@ void valuesByRandom(){
 
 void sortArray(){
     sorted_array = (int*)malloc(size * sizeof(int));
-    for (int i = 0; i < SIZE; i++)
+    for (int i = 0; i < size; i++)
         sorted_array[i] = array[i];
     for(int i = 1; i < size; i++){
         for(int k = i; k > 0 &&  sorted_array[k-1] > sorted_array[k]; k--){
@@ -63,18 +61,17 @@ double reley_distribution(double x, double sigma) {
 double inverse_reley_distribution(double P, double sigma) {
     if (P < 0 || P > 1) return -1;
     if (P == 1) return -1;
-    printf("pB = %f \n", P);
     return sigma * sqrt(-2 * log(1 - P));
 }
 
 void cutToIntervals() {
     double summ = 0;
-    for (int i = 0; i < SIZE; i++) {
+    for (int i = 0; i < size; i++) {
         summ += sorted_array[i] * sorted_array[i];
     }
 
-    double sigma = sqrt(summ / (2 * SIZE));
-    int interval_width = SIZE / ALPHABET_POWER;
+    double sigma = sqrt(summ / (2 * size));
+    int interval_width = size / ALPHABET_POWER;
     double interval[2];
     double buffer = sorted_array[0];
     double buffer_2 = 0;
@@ -83,21 +80,15 @@ void cutToIntervals() {
         interval[0] = buffer;
         double a = reley_distribution(interval[0], sigma);
         double b = inverse_reley_distribution(1.0/ALPHABET_POWER + a, sigma);
-        printf("pA = %f ", a);
-        printf("\n");
-        printf("b = %f ", b);
-        printf("\n");
-
-        printf("%s", "----------------\n");
 
         interval[1] = b;
         buffer = interval[1];
         matrix_interval[i][0] = interval[0];
         matrix_interval[i][1] = interval[1];
     }
-    matrix_interval[ALPHABET_POWER - 1][1] = sorted_array[SIZE - 1];
+    matrix_interval[ALPHABET_POWER - 1][1] = sorted_array[size - 1];
 
-    printf("Intervals:\n");
+    printf("intervals:\n");
     for (int i = 0; i < ALPHABET_POWER; i++) {
         printf("%c: [%f, %f]\n", alphabet[i], matrix_interval[i][0], matrix_interval[i][1]);
     }
@@ -105,6 +96,7 @@ void cutToIntervals() {
 }
 
 void toCharArray(){
+    char_array = (char*)malloc(size * sizeof(char));
     for(int i = 0; i < size; i++){
         for(int j = 0; j < ALPHABET_POWER; j++){
             if(array[i] >= matrix_interval[j][0] &&  array[i] <= matrix_interval[j][1])
@@ -177,32 +169,39 @@ void printCharArray(char * charArray, int size){
 
 
 int main (){
-
-    if(FLAG == 1)
+    int CORRECT_DATA_FLAG = 0;
+    if(DATA_ENTERING_FLAG == 1){
         valuesByUser();
-    else
+        if (size > 0 && ALPHABET_POWER > 0)
+            CORRECT_DATA_FLAG = 1;
+    }else{
         valuesByRandom();
+        if(ALPHABET_POWER > 0 && size > 0)
+            CORRECT_DATA_FLAG = 1;
+    }
+    if(CORRECT_DATA_FLAG == 1){
+        printf("default array:\n");
+        printIntArray(array, size);
 
-    printf("default array:\n");
-    printIntArray(array, SIZE);
+        sortArray();
 
-    sortArray();
+        printf("sorted array:\n");
+        printIntArray(sorted_array, size);
 
-    printf("sorted array:\n");
-    printIntArray(sorted_array, SIZE);
+        setAlphabet();
+        printf("alphabet:\n");
+        printCharArray(alphabet, ALPHABET_POWER);
 
-    setAlphabet();
-    printf("alphabet:\n");
-    printCharArray(alphabet, ALPHABET_POWER);
+        cutToIntervals();
 
-    cutToIntervals();
+        toCharArray();
+        printf("char array:\n");
+        printCharArray(char_array, size);
 
-    toCharArray();
-    printf("char array:\n");
-    printCharArray(char_array, SIZE);
-
-    makeResultMatrix();
-    printResultMatrix();
+        makeResultMatrix();
+        printResultMatrix();
+    }else
+        printf("incorrect data.");
 
     return 0;
 }
