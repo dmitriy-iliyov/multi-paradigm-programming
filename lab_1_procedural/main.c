@@ -5,8 +5,8 @@
 #include <math.h>
 
 
-#define ALPHABET_POWER 4
-#define SIZE 10
+#define ALPHABET_POWER 26
+#define SIZE 10z
 #define FLAG 0
 
 int size;
@@ -32,7 +32,7 @@ void valuesByRandom(){
     array = (int*)malloc(size * sizeof(int));
     srand(time(NULL));
     for (int i = 0; i < size; i++) {
-        array[i] = rand() % 201 - 100;
+        array[i] = rand() % 201;
     }
 }
 
@@ -55,24 +55,51 @@ void setAlphabet(){
     }
 }
 
-void cutToIntervals(){
-    double interval_width = (sorted_array[size - 1] - sorted_array[0]) / (ALPHABET_POWER - 1);
-    double interval[2];
-    for (int i = 0; i < ALPHABET_POWER; i++) {
-        double a = sorted_array[0] + i * interval_width;
-        double b = sorted_array[0] + (i + 1) * interval_width;
-        interval[0] = a;
-        interval[1] = b;
-        for (int j = 0; j < 2; j++) {
-            matrix_interval[i][j] = interval[j];
-        }
+double reley_distribution(double x, double sigma) {
+    if (x < 0) return 0;
+    return (1 - exp(-0.5 * pow(x / sigma, 2)));
+}
+
+double inverse_reley_distribution(double P, double sigma) {
+    if (P < 0 || P > 1) return -1;
+    if (P == 1) return -1;
+    printf("pB = %f \n", P);
+    return sigma * sqrt(-2 * log(1 - P));
+}
+
+void cutToIntervals() {
+    double summ = 0;
+    for (int i = 0; i < SIZE; i++) {
+        summ += sorted_array[i] * sorted_array[i];
     }
 
-    printf("intervals:\n");
+    double sigma = sqrt(summ / (2 * SIZE));
+    int interval_width = SIZE / ALPHABET_POWER;
+    double interval[2];
+    double buffer = sorted_array[0];
+    double buffer_2 = 0;
+
     for (int i = 0; i < ALPHABET_POWER; i++) {
-        for (int j = 0; j < 2; j++)
-            printf("%c %f ", alphabet[i], matrix_interval[i][j]);
+        interval[0] = buffer;
+        double a = reley_distribution(interval[0], sigma);
+        double b = inverse_reley_distribution(1.0/ALPHABET_POWER + a, sigma);
+        printf("pA = %f ", a);
         printf("\n");
+        printf("b = %f ", b);
+        printf("\n");
+
+        printf("%s", "----------------\n");
+
+        interval[1] = b;
+        buffer = interval[1];
+        matrix_interval[i][0] = interval[0];
+        matrix_interval[i][1] = interval[1];
+    }
+    matrix_interval[ALPHABET_POWER - 1][1] = sorted_array[SIZE - 1];
+
+    printf("Intervals:\n");
+    for (int i = 0; i < ALPHABET_POWER; i++) {
+        printf("%c: [%f, %f]\n", alphabet[i], matrix_interval[i][0], matrix_interval[i][1]);
     }
     printf("\n");
 }
@@ -151,12 +178,10 @@ void printCharArray(char * charArray, int size){
 
 int main (){
 
-    if(FLAG == 1){
+    if(FLAG == 1)
         valuesByUser();
-    }
-    else{
+    else
         valuesByRandom();
-    }
 
     printf("default array:\n");
     printIntArray(array, SIZE);
