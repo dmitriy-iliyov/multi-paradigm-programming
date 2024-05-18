@@ -5,9 +5,9 @@
 #include <math.h>
 
 
-#define ALPHABET_POWER 26
+#define ALPHABET_POWER 4
 #define DATA_ENTERING_FLAG 0
-int size = 100;
+int size = 10;
 
 int * array;
 int * sorted_array;
@@ -99,8 +99,10 @@ void toCharArray(){
     char_array = (char*)malloc(size * sizeof(char));
     for(int i = 0; i < size; i++){
         for(int j = 0; j < ALPHABET_POWER; j++){
-            if(array[i] >= matrix_interval[j][0] &&  array[i] <= matrix_interval[j][1])
+            if(array[i] >= matrix_interval[j][0] &&  array[i] <= matrix_interval[j][1]){
                 char_array[i] = alphabet[j];
+                break;
+            }
         }
     }
 }
@@ -167,6 +169,13 @@ void printCharArray(char * charArray, int size){
     printf("\n");
 }
 
+void writeToFile(){
+
+}
+
+void readFromFile(){
+
+}
 
 int main (){
     int CORRECT_DATA_FLAG = 0;
