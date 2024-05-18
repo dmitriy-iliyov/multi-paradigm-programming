@@ -92,4 +92,4 @@
           (let ((result-matrix (make-result-matrix char-list alphabet)))
             (print-matrix result-matrix)))))))
 
-(main 100 26)
+(main 4 4)
