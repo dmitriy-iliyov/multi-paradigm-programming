@@ -6,7 +6,7 @@
 
 
 #define ALPHABET_POWER 26
-#define DATA_ENTERING_FLAG 1
+#define DATA_ENTERING_FLAG 0
 int size = 100;
 
 int * array;
