@@ -8,29 +8,41 @@
 
 (defun set-alphabet (alphabet-power &optional (index 0) (alphabet '()))
   (if (< index alphabet-power)
-      (progn
-        (set-alphabet alphabet-power (1+ index) (cons (string (code-char (+ (char-code #\A) index))) alphabet)))
+      (set-alphabet alphabet-power (1+ index) (cons (string (code-char (+ (char-code #\A) index))) alphabet))
       (reverse alphabet)))
 
-(defun cut-to-intervals (sorted-array alphabet-power &optional (i 0) (matrix-interval '()))
-  (if (= i alphabet-power)
-      (reverse matrix-interval)
-      (let* ((interval-width (/ (- (elt sorted-array (1- (length sorted-array))) (elt sorted-array 0)) (- alphabet-power 1)))
-             (a (+ (elt sorted-array 0) (* i interval-width)))
-             (b (+ (elt sorted-array 0) (* (1+ i) interval-width)))
-             (new-interval (list a b)))
-        (cut-to-intervals sorted-array alphabet-power (1+ i) (cons new-interval matrix-interval)))))
+(defun reley-distribution (x sigma)
+  (if (< x 0)
+      0
+      (- 1 (exp (*  -0.5 (expt (/ x sigma) 2))))))
 
-(defun cut-to-intervals-v2 (sorted-array alphabet-power)
-  (let* ((n (length sorted-array))
-         (interval-width (/ n alphabet-power)))
-    (loop for i from 0 below alphabet-power
-          for a = (* i interval-width)
-          for b = (* (1+ i) interval-width)
-          collect (list (elt sorted-array (min (floor a) (1- n)))
-                        (elt sorted-array (min (floor b) (1- n)))))))
+(defun inverse-reley-distribution (P sigma)
+  (if (or (< P 0) (> P 1))
+      -1
+      (if (= P 1)
+          -1
+          (* sigma (sqrt (* -2 (log (- 1 P))))))))
+
+(defun cut-to-intervals (sorted-array alphabet-power)
+  "cut list to intervals based on rayleigh distribution"
+  (let* ((size (length sorted-array))
+         (summ (reduce #'+ (mapcar (lambda (x) (* x x)) sorted-array)))
+         (sigma (sqrt (/ summ (* 2 size))))
+         (matrix-interval '())
+         (buffer (elt sorted-array 0)))
+    (format t "Sigma: ~a~%" sigma)
+    (dotimes (i alphabet-power)
+      (let* ((pA (reley-distribution buffer sigma))
+             (b (inverse-reley-distribution (+ (/ 1.0 alphabet-power) pA) sigma)))
+        (format t "Buffer: ~a, pA: ~a, b: ~a~%" buffer pA b)
+        (push (list buffer b) matrix-interval)
+        (setf buffer b)))
+    (setf (caadr matrix-interval) (elt sorted-array (1- size)))
+    (reverse matrix-interval)))
+
 
 (defun to-char-list (start-list intervals alphabet)
+  "convert list of numbers into a list of characters based on intervals"
   (let ((char-list (make-list (length start-list))))
     (dotimes (i (length start-list))
       (let ((current-number (nth i start-list)))
@@ -41,7 +53,6 @@
             (when (and (<= a current-number b))
               (setf (nth i char-list) current-char))))))
     char-list))
-
 
 (defun find-index (element lst &optional (index 0))
   (cond ((null lst) nil)
@@ -70,20 +81,13 @@
   (let ((start-list (values-by-random size))
         (alphabet (set-alphabet alphabet-power)))
     (let ((sorted-list (sort-list start-list)))
-      (print "start list")
-      (print start-list)
-      (print "sorted list")
-      (print sorted-list)
-      (print "alphabet")
-      (print alphabet)
-      (format t "~%")
+      (format t "default list: ~a~%sorted list: ~a~%alphabet: ~a~%" start-list sorted-list alphabet)
       (let ((intervals (cut-to-intervals sorted-list alphabet-power)))
         (dolist (interval intervals)
-          (format t "Interval: [~f, ~f]~%" (first interval) (second interval)))
+          (format t "interval: [~f, ~f]~%" (first interval) (second interval)))
         (let ((char-list (to-char-list start-list intervals alphabet)))
-          (format t "~A~%" char-list)
+          (format t "char list: ~A~%" char-list)
           (let ((result-matrix (make-result-matrix char-list alphabet)))
             (print-matrix result-matrix)))))))
-        
 
 (main 4 4)
