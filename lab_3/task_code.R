@@ -26,6 +26,11 @@ cutToIntervals <- function(arr, alphabet_power) {
     buffer <- b
   }
   interval[alphabet_power, 2] <- arr[size]
+  if(interval[alphabet_power, 1] > interval[alphabet_power, 2]){
+    interval_width <- (interval[alphabet_power, 2] - interval[alphabet_power - 1, 1]) / 2
+    interval[alphabet_power - 1, 2] <- interval[alphabet_power - 1, 1] + interval_width
+    interval[alphabet_power, 1] <- interval[alphabet_power - 1, 2]
+  }
   return (interval)
 }
 
@@ -58,34 +63,35 @@ makeResultMatrix <- function(c_array, alphabet) {
   return(result_matrix)
 }
 
-SIZE <- 4
-ALPHABER_POWER <- 4
+SIZE <- 500
+ALPHABER_POWER <- 26
 
-array <- sample(1:100, SIZE)
-print("default array:")
-print(array)
+if(SIZE > 0 && ALPHABER_POWER > 0){
+  array <- sample(1:200, SIZE, replace = TRUE)
+  print("default array:")
+  print(array)
 
-if (ALPHABER_POWER > 0){
   alphabet <- LETTERS[1:ALPHABER_POWER]
+  
+  print("alphabet:")
+  print(alphabet)
+  
+  sorted_array <- sort(array)
+  
+  print("sorted array:")
+  print(sorted_array)
+  
+  intervals <- cutToIntervals(sorted_array, ALPHABER_POWER)
+  print("intervals:")
+  print(intervals)
+  
+  char_array <- toCharArray(array, intervals, alphabet)
+  print("char array:")
+  print(char_array)
+  
+  print(makeResultMatrix(char_array, alphabet))
 }else{
-  print("alphabet power <= 0, calculating impossible.")
+  print("alphabet power or array size <= 0, calculating impossible.")
 }
 
-print("alphabet:")
-print(alphabet)
-
-sorted_array <- sort(array)
-
-print("sorted array:")
-print(sorted_array)
-
-intervals <- cutToIntervals(sorted_array, ALPHABER_POWER)
-print("intervals:")
-print(intervals)
-
-char_array <- toCharArray(array, intervals, alphabet)
-print("char array:")
-print(char_array)
-
-print(makeResultMatrix(char_array, alphabet))
 
