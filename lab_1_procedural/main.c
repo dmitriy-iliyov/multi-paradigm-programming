@@ -5,9 +5,9 @@
 #include <math.h>
 
 
-#define ALPHABET_POWER 4
+#define ALPHABET_POWER 26
 #define DATA_ENTERING_FLAG 0
-int size = 10;
+int size = 100;
 
 int * array;
 int * sorted_array;
@@ -71,11 +71,9 @@ void cutToIntervals() {
     }
 
     double sigma = sqrt(summ / (2 * size));
-    int interval_width = size / ALPHABET_POWER;
     double interval[2];
     double buffer = sorted_array[0];
     double buffer_2 = 0;
-
     for (int i = 0; i < ALPHABET_POWER; i++) {
         interval[0] = buffer;
         double a = reley_distribution(interval[0], sigma);
@@ -87,6 +85,11 @@ void cutToIntervals() {
         matrix_interval[i][1] = interval[1];
     }
     matrix_interval[ALPHABET_POWER - 1][1] = sorted_array[size - 1];
+    if(matrix_interval[ALPHABET_POWER - 1][0] > matrix_interval[ALPHABET_POWER - 1][1]){
+        double interval_width = (matrix_interval[ALPHABET_POWER - 1][1] - matrix_interval[ALPHABET_POWER - 2][0])/2;
+        matrix_interval[ALPHABET_POWER - 2][1] = matrix_interval[ALPHABET_POWER - 2][0] + interval_width;
+        matrix_interval[ALPHABET_POWER - 1][0] = matrix_interval[ALPHABET_POWER - 2][1];
+    }
 
     printf("intervals:\n");
     for (int i = 0; i < ALPHABET_POWER; i++) {
