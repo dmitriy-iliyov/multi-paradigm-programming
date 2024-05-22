@@ -3,44 +3,100 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <stdio.h>
+
 
 
 #define ALPHABET_POWER 26
-#define DATA_ENTERING_FLAG 0
-int size = 100;
+#define DATA_ENTERING_FLAG 2
+int size = 5000;
 
-int * array;
-int * sorted_array;
+int result_matrix [ALPHABET_POWER + 1][ALPHABET_POWER + 1];
+double * array;
+double * sorted_array;
+double matrix_interval[ALPHABET_POWER][2];
 char alphabet[ALPHABET_POWER];
 char * char_array;
-double matrix_interval[ALPHABET_POWER][2];
-char result_matrix [ALPHABET_POWER + 1][ALPHABET_POWER + 1];
+char filename[] = "/Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural/files/f_data.txt";
+
+// values generating
 
 void valuesByUser(){
     printf("Enter count of values: ");
     scanf("%d", &size);
-    array = (int*)malloc(size * sizeof(int));
+    array = (double*)malloc(size * sizeof(double));
     for (int i = 0; i < size; i++){
         printf("a[%d] = ", i);
-        scanf("%d", &array[i]);
+        scanf("%lf", &array[i]);
     }
 }
 
 void valuesByRandom(){
-    array = (int*)malloc(size * sizeof(int));
+    array = (double*)malloc(size * sizeof(double));
     srand(time(NULL));
     for (int i = 0; i < size; i++) {
         array[i] = rand() % 201;
     }
 }
 
+int countLinesInFile(){
+    int lineCount = 0;
+    FILE *file;
+    char c;
+
+    file = fopen(filename, "r");
+
+    if (file == NULL) {
+        perror("file can't be opened\n");
+        return -1;
+    }
+    while ((c = fgetc(file)) != EOF) {
+        if (c == '\n') {
+            lineCount++;
+        }
+    }
+
+    fclose(file);
+    return lineCount;
+}
+
+void valuesFromFile(){
+
+    array = (double*)malloc(size * sizeof(double));
+    char buffer[256];
+    int count = 0;
+    size = countLinesInFile();
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("file can't be opened\n");
+    }
+
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        if (count < size) {
+            array[count] = atof(buffer);
+            count++;
+        } else {
+            perror("maximum number of numbers exceeded \n");
+            break;
+        }
+    }
+
+    fclose(file);
+
+    if (count == 0) {
+        printf("file is empty or data not found.\n");
+    }
+}
+
+// prepare data
+
 void sortArray(){
-    sorted_array = (int*)malloc(size * sizeof(int));
+    sorted_array = (double*)malloc(size * sizeof(double));
     for (int i = 0; i < size; i++)
         sorted_array[i] = array[i];
     for(int i = 1; i < size; i++){
         for(int k = i; k > 0 &&  sorted_array[k-1] > sorted_array[k]; k--){
-            int tmp = sorted_array[k-1];
+            double tmp = sorted_array[k-1];
             sorted_array[k-1] = sorted_array[k];
             sorted_array[k] = tmp;
         }
@@ -52,6 +108,8 @@ void setAlphabet(){
         alphabet[i] = 'A' + i;
     }
 }
+
+// cut to intervals
 
 double reley_distribution(double x, double sigma) {
     if (x < 0) return 0;
@@ -110,6 +168,8 @@ void toCharArray(){
     }
 }
 
+// making result matrix
+
 int findIndex(char a, char * charArray){
     int index = -1;
     for(int i = 0; i < ALPHABET_POWER; i++){
@@ -120,22 +180,6 @@ int findIndex(char a, char * charArray){
 }
 
 void makeResultMatrix(){
-    for (int i = -1; i < ALPHABET_POWER; i++) {
-        for (int j = -1; j < ALPHABET_POWER; j++) {
-            if (i == -1) {
-                if (j == -1)
-                    result_matrix[i][j] = ' ';
-                else
-                    result_matrix[i][j] = alphabet[j];
-            } else {
-                if (j == -1)
-                    result_matrix[i][j] = alphabet[i];
-                else{
-                    result_matrix[i][j] = '0';
-                }
-            }
-        }
-    }
     for(int i = 0; i < size; i++){
         if(i + 1 < size){
             int current_index = findIndex(char_array[i], alphabet);
@@ -147,11 +191,31 @@ void makeResultMatrix(){
     }
 }
 
-void printResultMatrix(){
+//void writeToFile(char *data) {
+//    FILE *file = fopen(FILE_NAME, "w");
+//    if (file == NULL) {
+//        printf("ERROR: file can't be opened\n");
+//        return;
+//    }
+//    fprintf(file, "%s\n", data);
+//    fclose(file);
+//}
+
+// prints
+
+void printResultMatrix() {
     printf("result_matrix:\n");
-    for (int i = -1; i < ALPHABET_POWER; i++) {
-        for (int j = -1; j < ALPHABET_POWER; j++) {
-            printf("%c ", result_matrix[i][j]);
+    printf("%4c ", ' ');
+    for(int i=0; i < ALPHABET_POWER; i++){
+        printf("%4c ", alphabet[i]);
+    }
+    printf("\n");
+    for (int i = 0; i < ALPHABET_POWER; i++) {
+        for (int j = 0; j < ALPHABET_POWER; j++) {
+            if(j == 0){
+                printf("%4c ", alphabet[i]);
+            }
+            printf("%4d ", result_matrix[i][j]);
         }
         printf("\n");
     }
@@ -165,26 +229,30 @@ void printIntArray(int * _array, int size){
     printf("\n");
 }
 
-void printCharArray(char * charArray, int size){
+void printDoubleArray(double * _array, int size){
+    for (int i = 0; i < size; i++)
+        printf("%.2f ", _array[i]);
+    printf("\n");
+    printf("\n");
+}
+
+void printCharArray(char *charArray, int size){
     for (int i = 0; i < size; ++i)
         printf("%c ", charArray[i]);
     printf("\n");
     printf("\n");
 }
 
-void writeToFile(){
-
-}
-
-void readFromFile(){
-
-}
 
 int main (){
     int CORRECT_DATA_FLAG = 0;
     if(DATA_ENTERING_FLAG == 1){
         valuesByUser();
         if (size > 0 && ALPHABET_POWER > 0)
+            CORRECT_DATA_FLAG = 1;
+    }else if(DATA_ENTERING_FLAG == 2){
+        valuesFromFile();
+        if(ALPHABET_POWER == 26 && size > 0)
             CORRECT_DATA_FLAG = 1;
     }else{
         valuesByRandom();
@@ -193,12 +261,11 @@ int main (){
     }
     if(CORRECT_DATA_FLAG == 1){
         printf("default array:\n");
-        printIntArray(array, size);
+        printDoubleArray(array, size);
 
         sortArray();
-
         printf("sorted array:\n");
-        printIntArray(sorted_array, size);
+        printDoubleArray(sorted_array, size);
 
         setAlphabet();
         printf("alphabet:\n");
@@ -214,6 +281,5 @@ int main (){
         printResultMatrix();
     }else
         printf("incorrect data.");
-
     return 0;
 }
