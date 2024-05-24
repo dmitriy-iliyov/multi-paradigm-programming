@@ -172,7 +172,6 @@ generate_alphabet(Curr, [Letter|Rest]) :-
 find_index(Element, List, Index) :-
     nth0(Index, List, Element).
 
-% Основной предикат для создания матрицы результатов
 make_result_matrix(CharArray, Alphabet, ResultMatrix, FinalResultMatrix) :-
     length(CharArray, Size),
     make_result_matrix_helper(CharArray, Alphabet, ResultMatrix, FinalResultMatrix, Size, 0).
@@ -189,7 +188,6 @@ make_result_matrix_helper(CharArray, Alphabet, ResultMatrix, FinalResultMatrix, 
     increment_matrix(ResultMatrix, CurrentIndex, NextIndex, TempResultMatrix),
     make_result_matrix_helper(CharArray, Alphabet, TempResultMatrix, FinalResultMatrix, Size, _NextIndex).
 
-% Предикат для инкрементации значения в матрице
 increment_matrix(ResultMatrix, CurrentIndex, NextIndex, NewResultMatrix) :-
     nth0(CurrentIndex, ResultMatrix, Row),
     nth0(NextIndex, Row, Value),
