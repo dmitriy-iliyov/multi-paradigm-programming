@@ -63,14 +63,19 @@ makeResultMatrix <- function(c_array, alphabet) {
   return(result_matrix)
 }
 
-SIZE <- 500
+SIZE <- 1
 ALPHABER_POWER <- 26
 
+setwd("/Users/Sayner/github_repos/multi-paradigm-programming/lab_2_functional/files")
+options(max.print = 5000)
+start_time <- Sys.time()
+
 if(SIZE > 0 && ALPHABER_POWER > 0){
-  array <- sample(1:200, SIZE, replace = TRUE)
+  #  array <- sample(1:200, SIZE, replace = TRUE)
+  array <- scan("f_data.txt")
   print("default array:")
   print(array)
-
+  
   alphabet <- LETTERS[1:ALPHABER_POWER]
   
   print("alphabet:")
@@ -94,4 +99,6 @@ if(SIZE > 0 && ALPHABER_POWER > 0){
   print("alphabet power or array size <= 0, calculating impossible.")
 }
 
-
+end_time <- Sys.time()
+execution_time <- end_time - start_time
+print(execution_time)
