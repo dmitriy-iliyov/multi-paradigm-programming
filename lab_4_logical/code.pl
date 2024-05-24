@@ -213,6 +213,7 @@ print_matrix([Row|Rest]) :-
     print_matrix(Rest).
 
 main() :-
+    statistics(runtime, _),
     % writeln('array:'),
     read_and_print_numbers('data.txt', NumericSeries),
     merge_sort(NumericSeries, SortedArray),
@@ -232,7 +233,9 @@ main() :-
     initialize_result_matrix(A, ResultMatrix),
     make_result_matrix(CharArray, A, ResultMatrix, FinalResultMatrix),
     writeln('Final matrix:'),
-    print_matrix(FinalResultMatrix).
+    print_matrix(FinalResultMatrix),
+    statistics(runtime, [_, Time]),
+    format('~f secs~n', [Time/1000]).
 
 
 :- initialization(main()).
