@@ -95,7 +95,6 @@ inverse_reley_distribution(P, Sigma, Result) :-
     ;   throw(error(instantiation_error, inverse_reley_distribution/3))
     ).
 
-
 compute_intervals(_, _, _, AlphabetPower, []) :-
     AlphabetPower =< 0.
 
@@ -212,7 +211,6 @@ print_matrix([]).
 print_matrix([Row|Rest]) :-
     writeln(Row),
     print_matrix(Rest).
-
 
 main() :-
     % writeln('array:'),
