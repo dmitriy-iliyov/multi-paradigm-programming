@@ -66,7 +66,7 @@ makeResultMatrix <- function(c_array, alphabet) {
 SIZE <- 1
 ALPHABER_POWER <- 26
 
-setwd("/Users/Sayner/github_repos/multi-paradigm-programming/lab_2_functional/files")
+setwd("/Users/Sayner/github_repos/multi-paradigm-programming/unit_work/mpp_get_data_script/files")
 options(max.print = 5000)
 start_time <- Sys.time()
 
