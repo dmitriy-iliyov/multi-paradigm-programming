@@ -5,19 +5,25 @@
 #include <math.h>
 #include <stdio.h>
 
-
+/*
+ * 1. user data -> DATA_ENTERING_FLAG 1
+ * 2. file data -> DATA_ENTERING_FLAG 2
+ * 3. random data -> DATA_ENTERING_FLAG 0
+ */
 
 #define ALPHABET_POWER 26
 #define DATA_ENTERING_FLAG 2
-int size = 5000;
+#define DEBUGGING_FLAG 0
+int size = 10;
 
-int result_matrix [ALPHABET_POWER + 1][ALPHABET_POWER + 1];
+char filename[] = "/Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural/files/f_data.txt";
 double * array;
+char alphabet[ALPHABET_POWER];
 double * sorted_array;
 double matrix_interval[ALPHABET_POWER][2];
-char alphabet[ALPHABET_POWER];
 char * char_array;
-char filename[] = "/Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural/files/f_data.txt";
+int result_matrix [ALPHABET_POWER + 1][ALPHABET_POWER + 1];
+
 
 // values generating
 
@@ -61,7 +67,6 @@ int countLinesInFile(){
 }
 
 void valuesFromFile(){
-
     array = (double*)malloc(size * sizeof(double));
     char buffer[256];
     int count = 0;
@@ -111,6 +116,14 @@ void setAlphabet(){
 
 // cut to intervals
 
+void func_to_debugging_intervals_cutting(double a, double pA, double b, double pB){
+    printf("a : %f\n", a);
+    printf("pA : %f\n", pA);
+    printf("pB : %f\n", pB);
+    printf("b : %f\n", b);
+    printf("________________________________\n");
+}
+
 double reley_distribution(double x, double sigma) {
     if (x < 0) return 0;
     return (1 - exp(-0.5 * pow(x / sigma, 2)));
@@ -129,16 +142,18 @@ void cutToIntervals() {
     }
 
     double sigma = sqrt(summ / (2 * size));
+    printf("sigma: %f\n\n", sigma);
     double interval[2];
-    double buffer = sorted_array[0];
-    double buffer_2 = 0;
+    double a = sorted_array[0];
     for (int i = 0; i < ALPHABET_POWER; i++) {
-        interval[0] = buffer;
-        double a = reley_distribution(interval[0], sigma);
-        double b = inverse_reley_distribution(1.0/ALPHABET_POWER + a, sigma);
-
+        interval[0] = a;
+        double pA = reley_distribution(interval[0], sigma);
+        double pB = 1.0/ALPHABET_POWER + pA;
+        double b = inverse_reley_distribution(pB, sigma);
         interval[1] = b;
-        buffer = interval[1];
+        if(DEBUGGING_FLAG == 1)
+            func_to_debugging_intervals_cutting(interval[0], pA, interval[1], pB);
+        a = interval[1];
         matrix_interval[i][0] = interval[0];
         matrix_interval[i][1] = interval[1];
     }
