@@ -14,7 +14,7 @@
 #define ALPHABET_POWER 26
 #define DATA_ENTERING_FLAG 2
 #define DEBUGGING_FLAG 0
-int size = 10;
+int size = 4;
 
 char filename[] = "/Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural/files/f_data.txt";
 double * array;
@@ -260,6 +260,11 @@ void printCharArray(char *charArray, int size){
 
 
 int main (){
+
+    clock_t start, end;
+    double cpu_time_used;
+    start = clock();
+
     int CORRECT_DATA_FLAG = 0;
     if(DATA_ENTERING_FLAG == 1){
         valuesByUser();
@@ -296,5 +301,9 @@ int main (){
         printResultMatrix();
     }else
         printf("incorrect data.");
+
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("%f secs\n", cpu_time_used);
     return 0;
 }
