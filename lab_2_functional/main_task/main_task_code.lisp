@@ -3,6 +3,23 @@
       result
       (values-by-random (1- size) (cons (random 100) result))))
 
+(defun values-from-file (file)
+  (with-open-file (stream file :direction :input)
+    (loop for line = (read-line stream nil)
+          while line
+          collect (multiple-value-bind (value success)
+                      (ignore-errors (read-from-string line))
+                    (if success value nil)))))
+
+(defun values-by-file (file)
+  (let ((path-to-file (merge-pathnames file *load-truename*)))
+    (values-by-file-helper (values-from-file path-to-file))))
+
+(defun values-by-file-helper (data &optional (result '()))
+  (if (endp data)
+      result
+      (values-by-file-helper (cdr data) (cons (car data) result))))
+
 (defun sort-list (array)
   (sort (subseq array 0 (length array)) '<))
 
@@ -39,7 +56,6 @@
         (setf buffer b)))
     (setf (cadar matrix-interval) (elt sorted-array (1- size)))
     (reverse matrix-interval)))
-
 
 (defun to-char-list (start-list intervals alphabet)
   "convert list of numbers into a list of characters based on intervals"
@@ -78,7 +94,7 @@
            (format t "~%")))
 
 (defun main (size alphabet-power)
-  (let ((start-list (values-by-random size))
+  (let ((start-list (values-by-file "f_data.txt"))
         (alphabet (set-alphabet alphabet-power)))
     (let ((sorted-list (sort-list start-list)))
       (format t "default list: ~a~%" start-list)
@@ -92,4 +108,4 @@
           (let ((result-matrix (make-result-matrix char-list alphabet)))
             (print-matrix result-matrix)))))))
 
-(main 4 4)
+(main 4 26)
