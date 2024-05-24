@@ -16,7 +16,7 @@
 #define DEBUGGING_FLAG 0
 int size = 4;
 
-char filename[] = "/Users/Sayner/github_repos/multi-paradigm-programming/lab_1_procedural/files/f_data.txt";
+char filename[] = "/Users/Sayner/github_repos/multi-paradigm-programming/unit_work/mpp_get_data_script/files/f_data.txt";
 double * array;
 char alphabet[ALPHABET_POWER];
 double * sorted_array;
