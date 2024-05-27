@@ -6,9 +6,9 @@
 #include <stdio.h>
 
 /*
- * 1. user data -> DATA_ENTERING_FLAG 1
- * 2. file data -> DATA_ENTERING_FLAG 2
- * 3. random data -> DATA_ENTERING_FLAG 0
+ * 1. random data -> DATA_ENTERING_FLAG 0
+ * 2. user data -> DATA_ENTERING_FLAG 1
+ * 3. file data -> DATA_ENTERING_FLAG 2
  */
 
 #define ALPHABET_POWER 26
@@ -205,16 +205,6 @@ void makeResultMatrix(){
         }
     }
 }
-
-//void writeToFile(char *data) {
-//    FILE *file = fopen(FILE_NAME, "w");
-//    if (file == NULL) {
-//        printf("ERROR: file can't be opened\n");
-//        return;
-//    }
-//    fprintf(file, "%s\n", data);
-//    fclose(file);
-//}
 
 // prints
 
